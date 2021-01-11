@@ -1,0 +1,160 @@
+<mat-toolbar color="primary" class="app-header">
+  <div><a href="/" class="navlogo">Rent-A-Car Korisnik</a>
+    &nbsp;&nbsp;
+  
+    <button  class="dugmeLista" mat-button [matMenuTriggerFor]="menu3" >
+      <mat-icon>face</mat-icon>
+      Korisnik
+    </button>
+  <mat-menu #menu3="matMenu">
+    <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" (click)="openDialogInfo()"><mat-icon>portrait</mat-icon>Informacije o korisniku</a>
+    <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" (click)="openDialogLozinka()"><mat-icon>vpn_key</mat-icon>Promeni lozinku</a>
+
+  </mat-menu>
+  </div>
+
+  
+
+  <span class="nav-tool-items">
+    <a mat-button mat-raised-button routerLink="/novoVozilo" routerLinkActive="active" (click)="novo()">Novo vozilo</a>
+    <a mat-button mat-raised-button routerLink="/svaVozila" routerLinkActive="active" (click)="sva()">Sva vozila</a>
+    <a mat-button mat-raised-button routerLink="/oglasi" routerLinkActive="active" (click)="sviMojiOglasi()">Svi oglasi</a>
+    <a mat-button mat-raised-button routerLink="/cenovnici" routerLinkActive="active" (click)="cenovnici()">Cenovnici</a>
+    <a mat-button mat-raised-button routerLink="/zahteviMess" routerLinkActive="active" (click)="zahteviMess()">Poruke</a>
+    <a mat-button mat-raised-button routerLink="/cart" routerLinkActive="active" (click)="shopCart()">Shopping Cart</a>
+    <a mat-button routerLink="" routerLinkActive="active" (click)="onOdjaviMe()">Odjavi Me</a>
+  </span>
+</mat-toolbar>
+<!-- OGLASI -->
+<mat-card class="card-container">
+  <mat-card-header class="header-container" style="width: 100%;">
+    <mat-card-title>
+      <h1>Oglasi</h1>
+    </mat-card-title>
+  </mat-card-header>
+  <!-- LEVA STRANA -->
+  <mat-card-content class="content-container" style="display: inline-flex; width: 100%;">
+    <mat-grid-list class="content-left" cols="2" rowHeight="5:4">
+      <mat-grid-tile *ngFor="let oglas of oglasiSource" style="margin: 15px;">
+        <!-- OGLAS TEMPLATE -->
+        <mat-card class="oglas-card">
+          <mat-card-header style="padding: 0.5rem;">
+            <!-- <div mat-card-avatar class="example-header-image"></div> -->
+            <mat-card-title>
+              {{oglas.vozilo.markaVozila.naziv}} {{oglas.vozilo.modelVozila.naziv}} {{oglas.vozilo.klasaVozila.naziv}}
+            </mat-card-title>
+            <mat-card-subtitle>
+              autor: {{oglas.vozilo.user.firstname}}
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>
+              <span style="color: rgb(93, 93, 93);">Mesto: </span>{{oglas.mesto}}
+            </p>
+            <p>
+              <span style="color: rgb(93, 93, 93);">Slobodan: </span>{{getDatum(oglas.slobodanOd)}} -
+              {{getDatum(oglas.slobodanDo)}}
+            </p>
+            <p>
+              <span style="color: rgb(93, 93, 93);">Tip goriva: </span>{{oglas.vozilo.tipgoriva.naziv}}
+            </p>
+            <p>
+              <span style="color: rgb(93, 93, 93);">Vrsta menjaca: </span>{{oglas.vozilo.vrstamenjaca.naziv}}
+            </p>
+          </mat-card-content>
+          <mat-card-actions>
+            <mat-grid-list style="padding-top: 0.8rem;" cols="13" rowHeight="2:2">
+              <mat-grid-tile [colspan]="5" [rowspan]="1"></mat-grid-tile>
+              <mat-grid-tile [colspan]="4" [rowspan]="2"></mat-grid-tile>
+              <mat-grid-tile style="border:1px solid blue; border-radius: 5px;" [colspan]="4" [rowspan]="2">
+                <h2>{{oglas.cena}} $</h2>
+              </mat-grid-tile>
+              <mat-grid-tile [colspan]="5" [rowspan]="1">
+                <button mat-raised-button color="primary" style="border-radius: 10px;"
+                  (click)="onRezervisi(oglas)">Rezervisi</button>
+              </mat-grid-tile>
+
+              <mat-grid-tile [colspan]="5" [rowspan]="1">
+                <button mat-raised-button color="primary" style="border-radius: 10px;" (click)="openDialog(oglas)">Dodaj komentar</button>
+              </mat-grid-tile>
+
+              <mat-grid-tile [colspan]="5" [rowspan]="1">
+                <button mat-raised-button color="primary" style="border-radius: 10px;" (click)="openDialogPrikazKomentara(oglas)">Komentari</button>
+              </mat-grid-tile>
+
+            </mat-grid-list>
+          </mat-card-actions>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+    <!-- DESNA STRANA -->
+    <div class="content-right">
+      <div class="search-container">
+        <mat-grid-list cols="5" rowHeight="3:3">
+          <mat-grid-tile [colspan]="3">
+            <h2>Pretraga</h2>
+          </mat-grid-tile>
+          <mat-grid-tile [colspan]="1">
+            <div>
+              <button mat-mini-fab style="background-color: rgb(107, 182, 138);" (click)="resetuj()"
+                aria-label="Resetuj">
+                <mat-icon>autorenew</mat-icon>
+              </button>
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile [colspan]="1">
+            <div>
+              <button mat-mini-fab color="primary"
+                (click)="onPretrazi(mesto.value,datum.value,marka.value,model.value,maksimalnaCena.value,minimalnaCena.value)"
+                aria-label="Pretraga">
+                <mat-icon>search</mat-icon>
+              </button>
+            </div>
+          </mat-grid-tile>
+        </mat-grid-list>
+        <hr>
+        <mat-form-field appearance="outline">
+          <mat-label>Mesto:</mat-label>
+          <input #mesto matInput placeholder="Unesite mesto">
+          <mat-icon matSuffix>location_city</mat-icon>
+        </mat-form-field>
+        <hr>
+        <mat-form-field appearance="outline">
+          <mat-label>Datum iznajmljivanja i povratka:</mat-label>
+          <input matInput [min]="startAt" #datum placeholder="Odaberite datum" [owlDateTime]="dt1"
+            [selectMode]="'range'" [owlDateTimeTrigger]="dt1" placeholder="Date Time">
+          <mat-icon matSuffix>date_range</mat-icon>
+          <owl-date-time #dt1></owl-date-time>
+        </mat-form-field>
+        <hr>
+        <mat-form-field appearance="outline">
+          <mat-label>Marka:</mat-label>
+          <input #marka matInput placeholder="Unesite marku">
+          <mat-icon matSuffix>directions_car</mat-icon>
+        </mat-form-field>
+        <hr>
+        <mat-form-field appearance="outline">
+          <mat-label>Model:</mat-label>
+          <input #model matInput placeholder="Unesite model">
+          <mat-icon matSuffix>directions_car</mat-icon>
+        </mat-form-field>
+        <hr>
+        <mat-form-field appearance="outline">
+          <mat-label>Minimalna cena:</mat-label>
+          <input #minimalnaCena matInput placeholder="Unesite cenu">
+          <mat-icon matSuffix>attach_money</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Maksimalna cena:</mat-label>
+          <input #maksimalnaCena matInput placeholder="Unesite cenu">
+          <mat-icon matSuffix>attach_money</mat-icon>
+        </mat-form-field>
+        <hr>
+        <button mat-raised-button color="primary"
+          (click)="onPretrazi(mesto.value,datum.value,marka.value,model.value,maksimalnaCena.value,minimalnaCena.value)"
+          color="primary" style="width: 100%;">Pretrazi
+          <mat-icon>search</mat-icon></button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

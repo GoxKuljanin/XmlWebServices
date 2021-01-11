@@ -1,0 +1,203 @@
+version: '3.7'
+services:
+
+  servisi-front:
+    build: ./ServisiFront
+    container_name: serversFront
+    restart: on-failure
+    ports:
+      - "4200:4200"
+    networks:
+      - xml
+
+  eureka-serviceregistry:
+    build: ./Servisi/EurekaServer
+    container_name: eurekaServerRegistry
+    restart: on-failure
+    networks:
+      - xml
+    ports:
+      - "8761:8761"
+
+  eureka-oglas-service:
+    build: ./Servisi/OglasService
+    container_name: eurekaOglasService
+    restart: on-failure
+    networks:
+      - xml
+    ports:
+      - "8092:8092"
+    links:
+      - postgresql-oglas
+    environment:
+      REGISTRY_HOST: eureka-serviceregistry
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: root
+      DATABASE_DOMAIN: postgresql-oglas
+      DATABASE_SCHEMA: oglas
+    depends_on:
+      - eureka-serviceregistry
+
+  eureka-authorization-service:
+    build: ./Servisi/AuthorizationService
+    container_name: eurekaAuthorizationService
+    restart: on-failure
+    networks:
+      - xml
+    ports:
+      - "8095:8095"
+    links:
+      - postgresql-mikros
+    environment:
+      REGISTRY_HOST: eureka-serviceregistry
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: root
+      DATABASE_DOMAIN: postgresql-mikros
+      DATABASE_SCHEMA: mikros
+    depends_on:
+      - eureka-serviceregistry
+
+  eureka-zahtev-service:
+    build: ./Servisi/ZahtevService
+    container_name: eurekaZahtevService
+    restart: on-failure
+    networks:
+      - xml
+    ports:
+      - "8093:8093"
+    links:
+      - postgresql-zahtev
+    environment:
+      REGISTRY_HOST: eureka-serviceregistry
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: root
+      DATABASE_DOMAIN: postgresql-zahtev
+      DATABASE_SCHEMA: zahtev
+    depends_on:
+      - eureka-serviceregistry
+      
+  eureka-search-service:
+    build: ./Servisi/SearchService
+    container_name: eurekaSearchService
+    restart: on-failure
+    networks:
+      - xml
+    ports:
+      - "8100:8100"
+    links:
+      - postgresql-search
+    environment:
+      REGISTRY_HOST: eureka-serviceregistry
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: root
+      DATABASE_DOMAIN: postgresql-search
+      DATABASE_SCHEMA: search
+    depends_on:
+      - eureka-serviceregistry
+      
+  eureka-commentrating-service:
+    build: ./Servisi/CommentRatingService
+    container_name: eurekaCommentRatingService
+    restart: on-failure
+    networks:
+      - xml
+    ports:
+      - "8097:8097"
+    links:
+      - postgresql-komentar
+    environment:
+      REGISTRY_HOST: eureka-serviceregistry
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: root
+      DATABASE_DOMAIN: postgresql-komentar
+      DATABASE_SCHEMA: komentar
+    depends_on:
+      - eureka-serviceregistry
+
+  postgresql-oglas:
+    image: postgres
+    container_name: postgresql-oglas
+    restart: always
+    networks:
+      - xml
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: oglas
+    ports:
+      - 5432:5432
+      
+  postgresql-search:
+    image: postgres
+    container_name: postgresql-search
+    restart: always
+    networks:
+      - xml
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: search
+    ports:
+      - 5432:5432
+
+  postgresql-zahtev:
+    image: postgres
+    container_name: postgresql-zahtev
+    restart: always
+    networks:
+      - xml
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: zahtev
+    ports:
+      - 5433:5432
+
+  postgresql-mikros:
+    image: postgres
+    container_name: postgresql-mikros
+    restart: always
+    networks:
+      - xml
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: mikros
+    ports:
+      - 5434:5432
+
+  postgresql-komentar:
+    image: postgres
+    container_name: postgresql-komentar
+    restart: always
+    networks:
+      - xml
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: komentar
+    ports:
+      - 5435:5432
+
+  gateway-service:
+    build: ./Servisi/GatewayService
+    container_name: gatewayService
+    restart: on-failure
+    networks:
+      - xml
+    ports:
+      - "8662:8662"
+    environment:
+      - REGISTRY_HOST=eureka-serviceregistry
+    depends_on:
+      - eureka-serviceregistry
+      - eureka-oglas-service
+      - eureka-zahtev-service
+      - eureka-authorization-service
+      - eureka-search-service
+      - eureka-commentrating-service
+
+networks:
+  xml:
+    name: xml
+    driver: bridge

@@ -1,0 +1,80 @@
+<mat-toolbar color="primary" class="app-header">
+    <div><a href="/" class="navlogo">Rent-A-Car Administrator</a></div>
+    <span class="nav-tool-items">
+
+   
+      <button class="dugmeRegistruj"  mat-button [matMenuTriggerFor]="menu3">
+        <mat-icon>admin_panel_settings</mat-icon>
+        Registrovanje
+      </button>
+      <mat-menu #menu3="matMenu">
+        <a mat-button mat-raised-button  routerLinkActive="active" class="dugmeRegAgenta" (click)="openDialogRegAgenta()"><mat-icon>perm_identity</mat-icon>Registruj agenta</a>
+        <a mat-button mat-raised-button  routerLinkActive="active" class="dugmeRegAgenta" (click)="openDialogRegFirme()"><mat-icon>apartment</mat-icon>Registruj firmu</a>
+      </mat-menu>
+  
+  
+  
+  
+  <span>
+     
+
+      <button class="dugmeKreiraj"  mat-button [matMenuTriggerFor]="menu1">Kreiraj entitet</button>
+      <mat-menu #menu1="matMenu">
+        <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/markaVozila">Kreiraj Marku Vozila</a>
+      
+        <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/klasaVozila">Kreiraj Klasu Vozila</a>
+        
+        <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/modelVozila">Kreiraj Model Vozila</a>
+  
+        <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/gorivoVozila">Kreiraj Tip Goriva</a>
+  
+        <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/menjacVozila">Kreiraj Vrstu Menjaca</a>
+      </mat-menu>
+
+
+      
+    <button class="dugmeLista"  mat-button [matMenuTriggerFor]="menu2">
+      <mat-icon>expand_more</mat-icon>
+      Liste
+    </button>
+    <mat-menu #menu2="matMenu">
+      <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/korisnici">Korisnici</a>
+    
+      <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/listaMarkiVozila">Lista Marke Vozila</a>
+    
+      <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/listaKlasaVozila">Lista Klase Vozila</a>
+      
+      <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/listaModelaVozila">Lista Modela Vozila</a>
+
+      <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/listaTipaGorivaVozila">Lista Tipa Goriva</a>
+
+      <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/listaVrstaMenjacaVozila">Lista Vrste Menjaca</a>
+
+      <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/listaKomentaraAdmina">Lista Pristiglih Komentara Korisnika</a>
+
+      <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/listaOdbobrenihKomentaraAdmina">Lista Odobrenih Komentara Korisnika</a>
+
+      <a mat-button mat-raised-button  routerLinkActive="active" class="dugme" routerLink="/listaOdbijenihKomentaraAdmina">Lista Odbijenih Komentara Korisnika</a>
+
+
+    </mat-menu>
+
+
+
+    </span>
+
+      <a mat-button mat-raised-button routerLink="" routerLinkActive="active" (click)="onOdjaviMe()">Odjavi Me</a>
+
+     
+
+    </span>
+  </mat-toolbar>  
+
+ 
+
+ 
+
+
+<div style="padding:20px;margin-top:30px;">
+    <router-outlet></router-outlet>
+</div>
